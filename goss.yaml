@@ -1,0 +1,9 @@
+file:
+  /bin/litestream:
+    exists: true
+    mode: "0755"
+
+command:
+  litestream version:
+    exit-status: 0
+    stderr: []
