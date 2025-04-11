@@ -4,6 +4,11 @@ description: "Litestream is a tool for replicating SQLite databases in real-time
 version: "0.3.13"
 base: ubuntu@24.04
 license: Apache-2.0
+services:
+  litestream:
+    command: /bin/litestream replicate -config /etc/litestream.yml
+    override: replace
+    startup: enabled
 platforms:
   amd64:
 parts:
@@ -23,6 +28,13 @@ parts:
       go build -ldflags "-s -w -X 'main.Version=latest' -extldflags '-static'" -tags osusergo,netgo,sqlite_omit_load_extension -o $CRAFT_PART_INSTALL/bin/litestream ./cmd/litestream
     stage:
       - bin/litestream
+  default-config:
+    plugin: dump
+    source: .
+    organize:
+      config.yml: etc/litestream.yml
+    stage:
+      - etc/litestream.yml
   deb-security-manifest:
     plugin: nil
     after:
