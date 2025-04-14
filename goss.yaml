@@ -7,3 +7,7 @@ command:
   litestream version:
     exit-status: 0
     stderr: []
+
+process:
+  litestream:
+    running: true
