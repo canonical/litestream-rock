@@ -1,0 +1,45 @@
+name: litestream
+summary: Litestream in a Rock.
+description: "Litestream is a tool for replicating SQLite databases in real-time."
+version: "0.4.0-beta.2"
+base: ubuntu@24.04
+license: Apache-2.0
+services:
+  litestream:
+    command: /bin/litestream replicate -config /etc/litestream.yml
+    override: replace
+    startup: enabled
+platforms:
+  amd64:
+parts:
+  litestream:
+    plugin: go
+    source: https://github.com/benbjohnson/litestream
+    source-type: git
+    source-tag: "v0.4.0-beta.2"
+    source-depth: 1
+    build-snaps:
+      - go/1.24/stable
+    build-environment:
+      - BUILD_IN_CONTAINER: "false"
+    build-packages:
+      - libsystemd-dev
+    override-build: |
+      go build -ldflags "-s -w -X 'main.Version=latest' -extldflags '-static'" -tags osusergo,netgo,sqlite_omit_load_extension -o $CRAFT_PART_INSTALL/bin/litestream ./cmd/litestream
+    stage:
+      - bin/litestream
+  default-config:
+    plugin: dump
+    source: .
+    organize:
+      config.yml: etc/litestream.yml
+    stage:
+      - etc/litestream.yml
+  deb-security-manifest:
+    plugin: nil
+    after:
+      - litestream
+    override-prime: |
+      set -x
+      mkdir -p $CRAFT_PRIME/usr/share/rocks/
+      (echo "# os-release" && cat /etc/os-release && echo "# dpkg-query" && dpkg-query --admindir=$CRAFT_PRIME/var/lib/dpkg/ -f '${db:Status-Abbrev},${binary:Package},${Version},${source:Package},${Source:Version}\n' -W) > $CRAFT_PRIME/usr/share/rocks/dpkg.query
