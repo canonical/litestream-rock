@@ -2,6 +2,8 @@ set allow-duplicate-recipes
 set allow-duplicate-variables
 import? 'rocks.just'
 
+source_repo := 'benbjohnson/litestream'
+
 [private]
 @default:
   just --list
