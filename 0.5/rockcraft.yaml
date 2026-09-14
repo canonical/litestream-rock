@@ -1,7 +1,7 @@
 name: litestream
 summary: Litestream in a Rock.
 description: "Litestream is a tool for replicating SQLite databases in real-time."
-version: "0.5.16"
+version: "0.5.17"
 base: ubuntu@24.04
 license: Apache-2.0
 services:
@@ -16,7 +16,7 @@ parts:
     plugin: go
     source: https://github.com/benbjohnson/litestream
     source-type: git
-    source-tag: "v0.5.16"
+    source-tag: "v0.5.17"
     source-depth: 1
     build-snaps:
       - go/1.25/candidate
